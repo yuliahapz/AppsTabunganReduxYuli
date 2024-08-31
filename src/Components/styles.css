@@ -1,0 +1,48 @@
+body {
+    background-color: #ffffff;
+    color: #000000;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .dark-mode {
+    background-color: #333333;
+    color: #ffffff;
+  }
+  
+  .dark-mode input {
+    background-color: #555555;
+    color: #ffffff;
+    border: 1px solid #777777;
+  }
+  
+  .dark-mode button {
+    background-color: #777777;
+    color: #ffffff;
+    border: none;
+    margin-top: 2px;
+  }
+  
+  .dark-mode-toggle {
+    margin-bottom: 10px;
+    margin-top: 20px;
+    padding: 8px 16px;
+    background-color: #008cba;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .dark-mode-toggle:hover {
+    background-color: #005f73;
+  }
+  
+  .dark-mode .dark-mode-toggle {
+    background-color: #ffffff;
+    color: #333333;
+  }
+  
+  .dark-mode .dark-mode-toggle:hover {
+    background-color: #cccccc;
+  }
+  

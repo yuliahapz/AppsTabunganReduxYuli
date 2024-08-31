@@ -1,58 +1,85 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { withdraw } from '../redux/slices/accountSlice';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import './styles.css'; 
 
 const Withdraw = () => {
-const dispatch = useDispatch();
-const [inputValue, setInputValue] = useState('');
-const balance = useSelector ((state)=> state.account.balance);
-const [errorMessage, setErrorMessage] = useState ('');
+  const dispatch = useDispatch();
+  const [inputValue, setInputValue] = useState('');
+  const tabungan = useSelector((state) => state.account.tabungan); 
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-const handleWithdraw = (event) => {
+  
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(amount).replace(/,/g, '.').replace('IDR', 'Rp');
+  };
+
+  const handleWithdraw = (event) => {
     event.preventDefault();
 
     
-    const amount = parseInt(inputValue.replace(/\./g, ''), 10);
+    const amount = parseInt(inputValue.replace(/[^\d]/g, ''), 10);
 
     if (!isNaN(amount)) {
-        if (amount <= balance) {
-    dispatch(withdraw(amount));
-    setErrorMessage('');
+      if (amount <= tabungan) { 
+        dispatch(withdraw(amount));
+        setErrorMessage('');
+      } else {
+        setErrorMessage('Saldo Tidak Cukup untuk Melakukan Penarikan.');
+      }
+    } else {
+      setErrorMessage('Masukkan jumlah yang valid.');
     }
-    else {
-        setErrorMessage ("Saldo Tidak Cukup untuk Melakukan Penarikan.");
-    }
-}
 
-    
     setInputValue('');
-};
+  };
 
-const handleInputChange = (event) => {
+  const handleInputChange = (event) => {
     const { value } = event.target;
 
     
-    const formattedValue = value.replace(/[^0-9.]/g, '');
+    const cleanedValue = value.replace(/[^\d]/g, '');
+    const formattedValue = cleanedValue ? formatCurrency(cleanedValue) : '';
 
     setInputValue(formattedValue);
-};
+  };
 
-return (
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [isDarkMode]);
+
+  return (
     <div>
-    <h4>Withdraw</h4>
-    <form onSubmit={handleWithdraw}>
-        <input 
-        type='text' 
-        name='withdraw' 
-        value={inputValue} 
-        onChange={handleInputChange} 
-        placeholder='Rp. 0'
+      <button className="dark-mode-toggle" onClick={toggleDarkMode}>
+        {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+      </button>
+      <h4>Withdraw</h4>
+      <form onSubmit={handleWithdraw}>
+        <input    
+          type="text"
+          name="withdraw"
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder="Rp. 0"
         />
-        <button type='submit'>Withdraw</button>
-    </form>
-    {errorMessage && <p style={{color:'red'}}>{errorMessage}</p>}
+        <button type="submit">Withdraw</button>
+      </form>
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
     </div>
-);
+  );
 };
 
 export default Withdraw;

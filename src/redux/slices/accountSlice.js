@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-// Create the account slice
 const accountSlice = createSlice({
   name: 'account',
   initialState: {
@@ -16,6 +15,6 @@ const accountSlice = createSlice({
   },
 });
 
-// Export actions and reducer
+
 export const { deposit, withdraw } = accountSlice.actions;
 export default accountSlice.reducer;
