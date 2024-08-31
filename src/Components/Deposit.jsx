@@ -3,46 +3,58 @@ import { deposit } from '../redux/slices/accountSlice';
 import { useState } from 'react';
 
 const Deposit = () => {
-const dispatch = useDispatch();
-const [inputValue, setInputValue] = useState('');
+  const dispatch = useDispatch();
+  const [inputValue, setInputValue] = useState('');
 
-const handleDeposit = (event) => {
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    })
+      .format(amount)
+      .replace(/,/g, '.')
+      .replace('IDR', 'Rp');
+  };
+
+  const handleDeposit = (event) => {
     event.preventDefault();
 
-    
-    const amount = parseInt(inputValue.replace(/\./g, ''), 10);
+    const amount = parseInt(inputValue.replace(/[^\d]/g, ''), 10);
 
     if (!isNaN(amount)) {
-    dispatch(deposit(amount));
+      dispatch(deposit(amount));
     }
 
-    
     setInputValue('');
-};
+  };
 
-const handleInputChange = (event) => {
+  const handleInputChange = (event) => {
     const { value } = event.target;
 
-    const formattedValue = value.replace(/[^0-9.]/g, '');
+ 
+    const cleanedValue = value.replace(/[^\d]/g, '');
+    const formattedValue = cleanedValue ? formatCurrency(cleanedValue) : '';
 
     setInputValue(formattedValue);
-};
+  };
 
-return (
+  return (
     <div>
-    <h4>Deposit</h4>
-    <form onSubmit={handleDeposit}>
-        <input 
-        type='text' 
-        name='deposit' 
-        value={inputValue} 
-        onChange={handleInputChange} 
-        placeholder='Rp. 0'
+      <h4>Deposit</h4>
+      <form onSubmit={handleDeposit}>
+        <input
+          type='text'
+          name='deposit'
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder='Rp. 0'
         />
-        <button type='submit'> Deposit</button>
-    </form>
+        <button type='submit'>Deposit</button>
+      </form>
     </div>
-);
+  );
 };
 
 export default Deposit;
